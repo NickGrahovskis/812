@@ -24,45 +24,46 @@
 const int ledRed = 11;
 const int ledYellow = 12;
 const int ledGreen = 13;
-int btnpin = 10;
-bool grenLight;
-bool yellowLight;
-bool redLight;
+const int btnpin = 10;
 
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(ledGreen,OUTPUT);
-  pinMode(ledYellow,OUTPUT);
-  pinMode(ledRed,OUTPUT);
-  pinMode(btnpin,INPUT_PULLUP);
-  
-  
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledYellow, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+  pinMode(btnpin, INPUT_PULLUP); // Enable internal pull-up resistor
 
+  // Ensure all LEDs are OFF at the start
+  digitalWrite(ledGreen, HIGH);
+  digitalWrite(ledYellow, HIGH);
+  digitalWrite(ledRed, HIGH);
 }
 
-// the loop function runs over and over again forever
-if(digitalread(btnpin)== LOW){
 void loop() {
-  if(grenLight){
-    digitalWrite(ledGreen, LOW);  
+  if (digitalRead(btnpin) == LOW) { // Button pressed
+    delay(50); // Debounce delay
+    while (digitalRead(btnpin) == LOW); // Wait for button release
+
+    // Start the light cycle
+
+    digitalWrite(ledGreen, LOW); // Green ON
     delay(4000);
-    digitalWrite(ledGreen, HIGH);  
-    delay(0);
-  }elseif()
-  
+    digitalWrite(ledGreen, HIGH); // Green OFF
 
-  digitalWrite(ledYellow, LOW);  
-  delay(1000);
-  digitalWrite(ledYellow, HIGH);  
-  delay(0);
+    digitalWrite(ledYellow, LOW); // Yellow ON
+    delay(1000);
+    digitalWrite(ledYellow, HIGH); // Yellow OFF
 
-  digitalWrite(ledRed, LOW);  
-  delay(3000);
-  digitalWrite(ledRed, HIGH);  
-  delay(0);
+    digitalWrite(ledRed, LOW); // Red ON
+    delay(3000);
+    digitalWrite(ledRed, HIGH); // Red OFF
 
+    // Now all LEDs remain OFF until the next button press
+  }
 }
-}
+
+
+    
+
 
 
 
