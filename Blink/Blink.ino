@@ -30,34 +30,29 @@ void setup() {
   pinMode(ledGreen, OUTPUT);
   pinMode(ledYellow, OUTPUT);
   pinMode(ledRed, OUTPUT);
-  pinMode(btnpin, INPUT_PULLUP); // Enable internal pull-up resistor
-
-  // Ensure all LEDs are OFF at the start
+  pinMode(btnpin, INPUT_PULLUP);
+  
   digitalWrite(ledGreen, HIGH);
   digitalWrite(ledYellow, HIGH);
   digitalWrite(ledRed, HIGH);
 }
 
 void loop() {
-  if (digitalRead(btnpin) == LOW) { // Button pressed
-    delay(50); // Debounce delay
-    while (digitalRead(btnpin) == LOW); // Wait for button release
+  if (digitalRead(btnpin) == LOW) { 
+    delay(50); 
+    while (digitalRead(btnpin) == LOW); 
 
-    // Start the light cycle
-
-    digitalWrite(ledGreen, LOW); // Green ON
+    digitalWrite(ledGreen, LOW);
     delay(4000);
-    digitalWrite(ledGreen, HIGH); // Green OFF
+    digitalWrite(ledGreen, HIGH);
 
-    digitalWrite(ledYellow, LOW); // Yellow ON
+    digitalWrite(ledYellow, LOW);
     delay(1000);
-    digitalWrite(ledYellow, HIGH); // Yellow OFF
+    digitalWrite(ledYellow, HIGH);
 
-    digitalWrite(ledRed, LOW); // Red ON
+    digitalWrite(ledRed, LOW);
     delay(3000);
-    digitalWrite(ledRed, HIGH); // Red OFF
-
-    // Now all LEDs remain OFF until the next button press
+    digitalWrite(ledRed, HIGH);
   }
 }
 
