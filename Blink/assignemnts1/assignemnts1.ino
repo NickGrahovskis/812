@@ -23,35 +23,44 @@
 */
 
 // the setup function runs once when you press reset or power the board
-int btnpin=9;
-bool MODE = true;
+const int btnpin=9;
+const int btnpin1=10;
+const int btnpin2 = 8;
+
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(btnpin, INPUT_PULLUP);
+  pinMode(btnpin1, INPUT_PULLUP);
+  pinMode(btnpin2, INPUT_PULLUP);
+  
 
 }
 
 void loop() {
 
-
-  if(digitalRead(btnpin) == LOW){
-    delay(50);
-    while(digitalRead(btnpin) == LOW);
-    MODE = !MODE ; }
-
-    if(MODE){
+  digitalWrite(LED_BUILTIN, HIGH);  
+      delay(1000);                      
+      digitalWrite(LED_BUILTIN, LOW);   
+      delay(1000); 
+      
+    while(digitalRead(btnpin1) == LOW){
       digitalWrite(LED_BUILTIN, HIGH);  
       delay(500);                      
       digitalWrite(LED_BUILTIN, LOW);   
       delay(500); 
     }
-    else{
-      digitalWrite(LED_BUILTIN, HIGH);  
-      delay(1000);                      
-      digitalWrite(LED_BUILTIN, LOW);   
-      delay(1000); 
-    }
+    
+    
+      while(digitalRead(btnpin2) == LOW){
+        digitalWrite(LED_BUILTIN, HIGH);  
+        delay(2000);                      
+        digitalWrite(LED_BUILTIN, LOW);   
+        delay(2000); 
+      }
+
+    
+
 
     
     
