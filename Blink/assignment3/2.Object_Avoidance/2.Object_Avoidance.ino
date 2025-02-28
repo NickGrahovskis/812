@@ -9,6 +9,7 @@ const int MOTOR_B_SPEED = 237;
 const int ROTATION_SPEED = 200;
 
 void setup() {
+  
     pinMode(TRIG, OUTPUT);
     pinMode(ECHO, INPUT);
     pinMode(MOTOR_A1, OUTPUT);
@@ -18,7 +19,7 @@ void setup() {
 }
 void loop() {
     long distance = getDistance();
-
+    Serial.print(distance);
     // Debug: print the distance value to monitor what's happening
     
 
@@ -56,6 +57,8 @@ long getDistance() {
     
     
     return distance; // Return distance value
+    
+    
 }
 
 // Motor control functions
