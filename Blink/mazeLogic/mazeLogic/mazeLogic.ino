@@ -2,6 +2,7 @@ const int MOTOR_A1 = 10;
 const int MOTOR_A2 = 11;
 const int MOTOR_B1 = 5;
 const int MOTOR_B2 = 6;
+const int ROTATION1_SENSOR = 2 ;
 
 const int TRIG_LEFT = 8;
 const int TRIG_RIGHT = 13;

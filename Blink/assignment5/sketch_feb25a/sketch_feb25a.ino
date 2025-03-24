@@ -11,15 +11,17 @@ const int ECHO = 9;
 // Base motor speed
 const int baseSpeed = 200;
 
-// Line sensor setup
-const int sensorPins[8] = { A0, A1, A2, A3, A4, A5, A6, A7 };
-const int numSensors = 8;
-int sensorValues[8];
+// Line sensor setup with 6 sensors: using pins A7, A2, A3, A4, A5, A6
+// Note: A7 is used in place of the former A1.
+const int sensorPins[6] = { A7, A2, A3, A4, A5, A6 };
+const int numSensors = 6;
+int sensorValues[6];
 
-// Assign weights to each sensor for proportional control
-int sensorWeights[8] = { -3, -2, -1, 0, 0, 1, 2, 3 };
+// Assign weights for proportional control
+// Left-most sensor (A7) gets -3, then -2, -1, then +1, +2, +3 for the right-most sensor (A6).
+int sensorWeights[6] = { -3, -2, -1, 1, 2, 3 };
 
-// Thresholds for white and black
+// Thresholds for white and black detection (adjust these values based on your sensors and surface)
 const int whiteThreshold = 600;
 const int blackThreshold = 900;
 
@@ -27,18 +29,20 @@ const int blackThreshold = 900;
 const float Kp = 30.0;
 
 void setup() {
+  // Set motor control pins as outputs
   pinMode(MOTOR_A1, OUTPUT);
   pinMode(MOTOR_A2, OUTPUT);
   pinMode(MOTOR_B1, OUTPUT);
   pinMode(MOTOR_B2, OUTPUT);
   
+  // Set ultrasonic sensor pins
   pinMode(TRIG, OUTPUT);
   pinMode(ECHO, INPUT);
   
   Serial.begin(9600);
 }
 
-// Function to measure distance using ultrasonic sensor
+// Function to measure distance using the ultrasonic sensor
 long getDistance() {
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
@@ -51,10 +55,9 @@ long getDistance() {
   return distance;
 }
 
-// Set motor speeds (updated to allow negative speeds for reverse)
-// When a speed is positive, the motor runs forward; negative values reverse it.
+// Set motor speeds (allowing negative values for reverse)
+// Positive values drive forward; negative values drive reverse.
 void setMotorSpeeds(int leftSpeed, int rightSpeed) {
- 
   leftSpeed = constrain(leftSpeed, -255, 255);
   rightSpeed = constrain(rightSpeed, -255, 255);
 
@@ -77,7 +80,7 @@ void setMotorSpeeds(int leftSpeed, int rightSpeed) {
   }
 }
 
-// Stop motors
+// Stop all motors
 void stopMotors() {
   analogWrite(MOTOR_A1, 0);
   analogWrite(MOTOR_A2, 0);
@@ -86,25 +89,25 @@ void stopMotors() {
 }
 
 void loop() {
-  // Check for obstacles first
+  // Check for obstacles using the ultrasonic sensor
   long distance = getDistance();
   if (distance > 0 && distance < 20) {
     stopMotors();
     Serial.println("Obstacle detected! Stopping...");
     delay(100);
-    return;  // Skip rest of loop while obstacle is present
+    return;  // Skip further processing while an obstacle is present
   }
   
   int weightedSum = 0;
   int activeSensors = 0;
   
-  // Read sensors and compute weighted sum for line position
+  // Read each sensor value and compute a weighted sum based on line detection
   for (int i = 0; i < numSensors; i++) {
     sensorValues[i] = analogRead(sensorPins[i]);
     Serial.print(sensorValues[i]);
     Serial.print("\t");
     
-    // Use sensor reading if it detects black (line)
+    // Consider the sensor active if it detects the black line
     if (sensorValues[i] > blackThreshold) {
       weightedSum += sensorWeights[i];
       activeSensors++;
@@ -112,16 +115,16 @@ void loop() {
   }
   Serial.println();
 
-  // If no sensor detects the line, execute a recovery routine
+  // Recovery routine: if no sensor detects the line
   if (activeSensors == 0) {
     Serial.println("Line lost! Reversing and pivoting...");
-    // Reverse briefly to try and relocate the line
+    // Reverse briefly to try to re-acquire the line
     setMotorSpeeds(-baseSpeed, -baseSpeed);
     delay(200);
     // Pivot turn (for example, pivot left) to search for the line
     setMotorSpeeds(-baseSpeed, baseSpeed);
     delay(150);
-    return;  // Skip the rest of the loop this cycle
+    return;  // Skip the rest of this loop cycle
   }
 
   // Normal line following using proportional control
@@ -132,7 +135,7 @@ void loop() {
   
   setMotorSpeeds(leftMotorSpeed, rightMotorSpeed);
   
-  // Debugging output
+  // Debugging output to the Serial Monitor
   Serial.print("Error: ");
   Serial.print(error);
   Serial.print("  Correction: ");
